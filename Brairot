@@ -1,0 +1,178 @@
+-- 🌊 TSUNAMI BRAINROT - KEY SYSTEM LOCAL + TP BASE + TP CELESTIAL SAFE
+
+-- ===== SERVIÇOS =====
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
+-- ===============================
+-- 🔐 KEYS VÁLIDAS
+-- ===============================
+local function normalize(text)
+	return text:gsub("^%s+", ""):gsub("%s+$", ""):lower()
+end
+
+local function checkKey(userKey)
+	userKey = normalize(userKey)
+	return userKey == "pedro 12'" or userKey == "pedro 24"
+end
+
+-- ===============================
+-- 🧍 FUNÇÕES DO PERSONAGEM
+-- ===============================
+local function getChar()
+	return player.Character or player.CharacterAdded:Wait()
+end
+
+local function getHRP()
+	return getChar():WaitForChild("HumanoidRootPart")
+end
+
+-- ===============================
+-- 🌍 TP BASE
+-- ===============================
+local function findBase()
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("SpawnLocation") then
+			return v
+		end
+	end
+end
+
+local function tpBase()
+	local hrp = getHRP()
+	local base = findBase()
+	if not base then return end
+	local cf = CFrame.new(base.Position + Vector3.new(0,3,0))
+	TweenService:Create(hrp, TweenInfo.new(0.25), {CFrame = cf}):Play()
+end
+
+-- ===============================
+-- 🌌 TP CELESTIAL SAFE
+-- ===============================
+local function findCelestialPart()
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("BasePart") then
+			local n = v.Name:lower()
+			if n:find("celestial") or n:find("brainrot") then
+				return v
+			end
+		end
+	end
+end
+
+local function tpCelestialSafe()
+	local char = getChar()
+	local hrp = getHRP()
+	local part = findCelestialPart()
+	if not part then return end
+
+	local origin = part.Position + Vector3.new(0,300,0)
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = {char}
+	params.FilterType = Enum.RaycastFilterType.Blacklist
+
+	local result = workspace:Raycast(origin, Vector3.new(0,-700,0), params)
+	if not result then return end
+
+	local safePos = result.Position + Vector3.new(0,2.5,0)
+	TweenService:Create(hrp, TweenInfo.new(0.3), {CFrame = CFrame.new(safePos)}):Play()
+end
+
+-- ===============================
+-- 🖥️ GUI DE KEY
+-- ===============================
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0,230,0,160)
+frame.Position = UDim2.new(0.05,0,0.4,0)
+frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame)
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,30)
+title.BackgroundTransparency = 1
+title.Text = "🔐 TSUNAMI KEY"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.TextColor3 = Color3.fromRGB(0,200,255)
+
+local keyBox = Instance.new("TextBox", frame)
+keyBox.Size = UDim2.new(0.9,0,0,40)
+keyBox.Position = UDim2.new(0.05,0,0.28,0)
+keyBox.PlaceholderText = "Digite a Key"
+keyBox.ClearTextOnFocus = false
+keyBox.TextColor3 = Color3.new(1,1,1)
+keyBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+Instance.new("UICorner", keyBox)
+
+local btnKey = Instance.new("TextButton", frame)
+btnKey.Size = UDim2.new(0.9,0,0,35)
+btnKey.Position = UDim2.new(0.05,0,0.6,0)
+btnKey.Text = "VALIDAR"
+btnKey.Font = Enum.Font.GothamBold
+btnKey.TextSize = 14
+btnKey.TextColor3 = Color3.new(1,1,1)
+btnKey.BackgroundColor3 = Color3.fromRGB(0,140,220)
+Instance.new("UICorner", btnKey)
+
+-- ===============================
+-- ✅ MENU APÓS KEY
+-- ===============================
+local function criarMenuTP()
+	frame:Destroy()
+
+	local gui2 = Instance.new("ScreenGui", player.PlayerGui)
+	gui2.ResetOnSpawn = false
+
+	local menu = Instance.new("Frame", gui2)
+	menu.Size = UDim2.new(0,220,0,180)
+	menu.Position = UDim2.new(0.05,0,0.35,0)
+	menu.BackgroundColor3 = Color3.fromRGB(15,15,15)
+	menu.Active = true
+	menu.Draggable = true
+	Instance.new("UICorner", menu)
+
+	local t = Instance.new("TextLabel", menu)
+	t.Size = UDim2.new(1,0,0,30)
+	t.BackgroundTransparency = 1
+	t.Text = "🌊 TSUNAMI TP"
+	t.Font = Enum.Font.GothamBold
+	t.TextSize = 16
+	t.TextColor3 = Color3.fromRGB(0,200,255)
+
+	local b1 = Instance.new("TextButton", menu)
+	b1.Size = UDim2.new(0.9,0,0,45)
+	b1.Position = UDim2.new(0.05,0,0.3,0)
+	b1.Text = "TP BASE"
+	b1.BackgroundColor3 = Color3.fromRGB(0,140,220)
+	b1.TextColor3 = Color3.new(1,1,1)
+	Instance.new("UICorner", b1)
+
+	local b2 = Instance.new("TextButton", menu)
+	b2.Size = UDim2.new(0.9,0,0,45)
+	b2.Position = UDim2.new(0.05,0,0.6,0)
+	b2.Text = "TP CELESTIAL SAFE"
+	b2.BackgroundColor3 = Color3.fromRGB(180,0,255)
+	b2.TextColor3 = Color3.new(1,1,1)
+	Instance.new("UICorner", b2)
+
+	b1.MouseButton1Click:Connect(tpBase)
+	b2.MouseButton1Click:Connect(tpCelestialSafe)
+end
+
+-- ===============================
+-- 🔘 VALIDAR KEY
+-- ===============================
+btnKey.MouseButton1Click:Connect(function()
+	if checkKey(keyBox.Text) then
+		criarMenuTP()
+	else
+		keyBox.Text = "Key inválida ❌"
+	end
+end)
